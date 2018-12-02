@@ -1,19 +1,24 @@
 require "pry"
 
+class InputFetcher
+  def self.run
+    File.read(ARGV[0]).split("\n")
+  end
+end
+
 class ChecksumBoxIds
   def initialize
+    @input = InputFetcher.run
     @two_coincidence_count = 0
     @three_coincidence_count = 0
   end
-  attr_accessor :two_coincidence_count, :three_coincidence_count
+  attr_accessor :two_coincidence_count, :three_coincidence_count, :input
 
   def run
-    input = File.read(ARGV[0])
-
-    input.split("\n").each do |box_id|
+    input.each do |box_id|
       calculate_letter_coincidence(box_id)
     end
-    p two_coincidence_count * three_coincidence_count
+    two_coincidence_count * three_coincidence_count
   end
 
 private
@@ -26,4 +31,30 @@ private
   end
 end
 
-ChecksumBoxIds.new.run
+class FabricFinder
+  def initialize
+    @input = InputFetcher.run.map { |box_id| box_id.split("") }
+  end
+  attr_accessor :input
+
+  def run
+    input.each_with_index do |box_id, index|
+      input[index + 1..-1].each do |compared_id|
+        no_match_count = box_id.zip(compared_id).map{|initial_id, compared_id| initial_id != compared_id}.count(&:itself)
+        if no_match_count == 1
+          calculate_common_letters(box_id, compared_id)
+          break
+        end
+      end
+    end
+  end
+
+private
+
+  def calculate_common_letters(box_1_id, box_2_id)
+    p (box_1_id - (box_1_id - box_2_id)).join
+  end
+end
+
+p ChecksumBoxIds.new.run
+FabricFinder.new.run
