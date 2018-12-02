@@ -1,8 +1,6 @@
-require "pry"
-
 class InputFetcher
   def self.run
-    File.read(ARGV[0]).split("\n")
+    File.read(ARGV[0]).split("\n").map { |box_id| box_id.split("") }
   end
 end
 
@@ -24,7 +22,7 @@ class ChecksumBoxIds
 private
 
   def calculate_letter_coincidence(box_id)
-    repeated_letters = box_id.split("").group_by(&:itself)
+    repeated_letters = box_id.group_by(&:itself)
 
     @two_coincidence_count += 1 if repeated_letters.any?{|k, v| v.size == 2}
     @three_coincidence_count += 1 if repeated_letters.any?{|k, v| v.size == 3}
@@ -33,7 +31,7 @@ end
 
 class FabricFinder
   def initialize
-    @input = InputFetcher.run.map { |box_id| box_id.split("") }
+    @input = InputFetcher.run
   end
   attr_accessor :input
 
@@ -56,5 +54,5 @@ private
   end
 end
 
-p ChecksumBoxIds.new.run
+ChecksumBoxIds.new.run
 FabricFinder.new.run
