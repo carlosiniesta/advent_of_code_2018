@@ -33,12 +33,13 @@ class FabricFinder
   def initialize
     @input = InputFetcher.run
   end
-  attr_accessor :input
+  attr_accessor :input, :result
 
   def run
     catch :reference_found do
       compare_id_boxes
     end
+    result
   end
 
 private
@@ -59,7 +60,7 @@ private
   end
 
   def calculate_common_letters(box_1_id, box_2_id)
-    p (box_1_id - (box_1_id - box_2_id)).join
+    @result = (box_1_id - (box_1_id - box_2_id)).join
   end
 end
 

@@ -16,7 +16,7 @@ class FrecuencyCalculator
       break if repeated_frecuency?
       @reached_frecuencies << actual_frecuency
     end
-    p actual_frecuency
+    actual_frecuency
   end
 
 private
@@ -25,5 +25,3 @@ private
     reached_frecuencies.include?(actual_frecuency)
   end
 end
-
-FrecuencyCalculator.new.run
