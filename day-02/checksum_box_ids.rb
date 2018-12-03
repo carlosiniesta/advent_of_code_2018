@@ -36,18 +36,27 @@ class FabricFinder
   attr_accessor :input
 
   def run
-    input.each_with_index do |box_id, index|
-      input[index + 1..-1].each do |compared_id|
-        no_match_count = box_id.zip(compared_id).map{|initial_id, compared_id| initial_id != compared_id}.count(&:itself)
-        if no_match_count == 1
-          calculate_common_letters(box_id, compared_id)
-          break
-        end
-      end
+    catch :reference_found do
+      compare_id_boxes
     end
   end
 
 private
+
+  def compare_id_boxes
+    input.each_with_index do |box_id, index|
+      input[index + 1..-1].each do |compared_id|
+        no_match_count = box_id.zip(compared_id).map do |initial_id, compared_id|
+          initial_id != compared_id
+        end.count(&:itself)
+
+        if no_match_count == 1
+          calculate_common_letters(box_id, compared_id)
+          throw :reference_found
+        end
+      end
+    end
+  end
 
   def calculate_common_letters(box_1_id, box_2_id)
     p (box_1_id - (box_1_id - box_2_id)).join
